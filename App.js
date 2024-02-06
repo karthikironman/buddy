@@ -1,23 +1,58 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import ContextWrapper from './context/ContextWrapper';
+import { useNetInfo } from "@react-native-community/netinfo";
 
-export default function App() {
+import { NavigationContainer } from "@react-navigation/native";
+
+import ContextWrapper from "./context/ContextWrapper.js";
+import NoInternetConnection from "./screens/noInternet.js";
+import { createStackNavigator } from "@react-navigation/stack";
+import SignIn from "./screens/signIn.js";
+import { useContext, useEffect, useState } from "react";
+import GlobalContext from "./context/GlobalContext.js";
+
+const Stack = createStackNavigator();
+
+const App = () => {
+  useEffect(()=>{
+    console.log('[USE EFFECT] App.js')
+  },[])
+  return (
+    <NavigationContainer>
+    <Setup />
+    </NavigationContainer>
+  );
+};
+
+
+
+const Setup = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="signIn"
+        component={SignIn}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const InternetCheckerScreen = ({ children }) => {
+  const netInfo = useNetInfo();
+  if (netInfo.isConnected) return children;
+  else return <NoInternetConnection />;
+};
+
+function Main() {
+  //attach the wrapper and internet connection checker
+  useEffect(()=>{
+    console.log('[USE EFFECT] Main')
+  },[])
   return (
     <ContextWrapper>
-    <View style={styles.container}>
-      <Text>SIMPLIFYING COLLEGE INDOOR DELIVERIES</Text>
-      <StatusBar style="auto" />
-    </View>
+      <InternetCheckerScreen>
+        <App />
+      </InternetCheckerScreen>
     </ContextWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default Main;

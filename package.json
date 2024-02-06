@@ -29,7 +29,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-webview": "13.6.4",
-    "expo-dev-client": "~3.3.8"
+    "expo-dev-client": "~3.3.8",
+    "react-native-gesture-handler": "~2.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
