@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import ContextWrapper from './context/ContextWrapper';
 
 export default function App() {
   return (
+    <ContextWrapper>
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text>SIMPLIFYING COLLEGE INDOOR DELIVERIES</Text>
       <StatusBar style="auto" />
     </View>
+    </ContextWrapper>
   );
 }
 
