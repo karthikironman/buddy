@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "149176316362",
+    "project_id": "buddy2-007",
+    "storage_bucket": "buddy2-007.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149176316362:android:65e52c1a95a9a64bb29f33",
+        "android_client_info": {
+          "package_name": "com.karthikironman.buddy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBB_oxQDoU_JjNPutM1qddpvLPrfSV0Tic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

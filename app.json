@@ -18,13 +18,16 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode":1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.karthikironman.buddy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": ["@react-native-firebase/app", "@react-native-firebase/auth"]
   }
 }
