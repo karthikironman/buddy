@@ -40,7 +40,7 @@ const Loop = () => {
         !!currUserData?.displayName ? "TRUE" : "FALSE"
       );
       const flagReady =
-        !!currUserData?.displayName // && !!currUserData?.pushNotificationToken;
+        !!currUserData?.displayName  && !!currUserData?.pushNotificationToken;
       setReady(flagReady);
     }
   }, [currUserData]);
