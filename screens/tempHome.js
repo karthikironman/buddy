@@ -56,7 +56,7 @@ const HomeScreen = () => {
   };
 
   const openWhatsApp = () => {
-    const message = `I would like to order ${selectedItem.name}.`;
+    const message = `Hi Buddy Delivery, I would like to order *${selectedItem.name}* from *${selectedItem.shopName}*.`;
     Linking.openURL(`whatsapp://send?text=${message}&phone=+918891750225`);
   };
 
@@ -65,7 +65,19 @@ const HomeScreen = () => {
       <StatusBar barStyle="dark-content" />
       <View style={styles.bannerAd}>
         {bannerAd?.url && (
-          <Image source={{ uri: bannerAd.url }} style={styles.bannerImage} />
+         <TouchableOpacity
+         style={styles.bannerImage}
+         onPress={() => {
+           if (bannerAd?.url) {
+             Linking.openURL(bannerAd.url);
+           }
+         }}
+       >
+         <Image
+           source={{ uri: bannerAd.imageUrl }}
+           style={styles.bannerImage}
+         />
+       </TouchableOpacity>
         )}
       </View>
       <ScrollView
@@ -88,7 +100,7 @@ const HomeScreen = () => {
               <Text style={styles.itemName}>{item.name}</Text>
               <Text style={styles.shopName}>{item.shopName}</Text>
               <Text style={styles.itemLabel}>
-                Price: <Text style={styles.itemValue}>{item.price}</Text>
+                Price: <Text style={styles.itemValue}>₹ {item.price}</Text>
               </Text>
               <Text style={styles.itemLabel}>
                 Delivery Speed:{" "}
@@ -132,7 +144,7 @@ const HomeScreen = () => {
               <Text style={styles.shopName}>{selectedItem?.shopName}</Text>
               <Text style={styles.itemLabel}>
                 Price:{" "}
-                <Text style={styles.itemValue}>{selectedItem?.price}</Text>
+                <Text style={styles.itemValue}>₹ {selectedItem?.price}</Text>
               </Text>
               <Text style={styles.itemLabel}>
                 Delivery Speed:{" "}
@@ -202,6 +214,7 @@ const styles = StyleSheet.create({
   itemValue: {
     fontSize: 16,
     marginTop: 3,
+    color:'blue'
   },
   logoutButton: {
     backgroundColor: "red",
