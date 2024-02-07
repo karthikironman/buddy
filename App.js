@@ -56,11 +56,19 @@ const Loop = () => {
           />
         )}
         {ready === true && (
+          <>
           <Stack.Screen
             name="home"
             component={TempHome}
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+          name="profile"
+          component={Profile}
+          options={{ headerShown: false }}
+        />
+          </>
+          
         )}
          {ready === null && (
           <Stack.Screen

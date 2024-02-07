@@ -16,12 +16,16 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useNavigation } from "@react-navigation/native";
+
 const HomeScreen = () => {
   const [items, setItems] = useState([]);
   const [bannerAd, setBannerAd] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetchItems();
@@ -55,6 +59,9 @@ const HomeScreen = () => {
     }
   };
 
+  const handleProfilePageOpen = () => {
+    navigation.navigate('profile');
+  }
   const openWhatsApp = () => {
     const message = `Hi Buddy Delivery, I would like to order *${selectedItem.name}* from *${selectedItem.shopName}*.`;
     Linking.openURL(`whatsapp://send?text=${message}&phone=+918891750225`);
@@ -109,6 +116,9 @@ const HomeScreen = () => {
             </View>
           </TouchableOpacity>
         ))}
+        <TouchableOpacity style={styles.profilePage} onPress={handleProfilePageOpen}>
+          <Text style={styles.profilePageText}>Profile</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
@@ -223,6 +233,16 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   logoutButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  }, 
+  profilePage: {
+    backgroundColor: "blue",
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+  },
+  profilePageText: {
     color: "white",
     fontWeight: "bold",
   },
