@@ -9,6 +9,9 @@ import SignIn from "./screens/signIn.js";
 import TempHome from "./screens/tempHome.js";
 import { useContext, useEffect, useState } from "react";
 import GlobalContext from "./context/GlobalContext.js";
+import UserDataListener from "./components/UserDataListener.js";
+import DueDiligenceScreen from "./screens/dueDiligence.js";
+import Profile from "./screens/profile.js";
 
 const Stack = createStackNavigator();
 
@@ -26,14 +29,48 @@ const App = () => {
 };
 
 const Loop = () => {
+  const { currUserData } = useContext(GlobalContext);
+  const [ready, setReady] = useState(null);
+  useEffect(() => {
+    //YOU CAN IGNORE THE ERROR UPDATING THE CURRENT VERSION IN USER DOCUMENT, WHEN YOU ARE TESTING IN THE COMPUTER
+    //SIMULATOR, IT IS BECAUSE THE CURR USER DATA IS NOT CLEARING UPON LOGOUT
+    if (currUserData) {
+      console.log(
+        "[READY FLAG in Loop] ",
+        !!currUserData?.displayName ? "TRUE" : "FALSE"
+      );
+      const flagReady =
+        !!currUserData?.displayName // && !!currUserData?.pushNotificationToken;
+      setReady(flagReady);
+    }
+  }, [currUserData]);
+
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="home"
-        component={TempHome}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
+    <UserDataListener>
+      <Stack.Navigator>
+        {ready === false && (
+          <Stack.Screen
+            name="profile"
+            component={Profile}
+            options={{ headerShown: false }}
+          />
+        )}
+        {ready === true && (
+          <Stack.Screen
+            name="home"
+            component={TempHome}
+            options={{ headerShown: false }}
+          />
+        )}
+         {ready === null && (
+          <Stack.Screen
+            name="duediligence"
+            component={DueDiligenceScreen}
+            options={{ headerShown: false }}
+          />
+        )}
+      </Stack.Navigator>
+    </UserDataListener>
   );
 };
 
