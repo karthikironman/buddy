@@ -9,9 +9,9 @@ import SignIn from "./screens/signIn.js";
 import TempHome from "./screens/tempHome.js";
 import { useContext, useEffect, useState } from "react";
 import GlobalContext from "./context/GlobalContext.js";
-import UserDataListener from "./components/UserDataListener.js";
 import DueDiligenceScreen from "./screens/dueDiligence.js";
 import Profile from "./screens/profile.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 
@@ -29,56 +29,60 @@ const App = () => {
 };
 
 const Loop = () => {
-  const { currUserData } = useContext(GlobalContext);
-  const [ready, setReady] = useState(null);
-  useEffect(() => {
-    //YOU CAN IGNORE THE ERROR UPDATING THE CURRENT VERSION IN USER DOCUMENT, WHEN YOU ARE TESTING IN THE COMPUTER
-    //SIMULATOR, IT IS BECAUSE THE CURR USER DATA IS NOT CLEARING UPON LOGOUT
-    if (currUserData) {
-      console.log(
-        "[READY FLAG in Loop] ",
-        !!currUserData?.displayName ? "TRUE" : "FALSE"
-      );
-      const flagReady =
-        !!currUserData?.displayName  && !!currUserData?.pushNotificationToken;
-      setReady(flagReady);
-    }
-  }, [currUserData]);
+  //read the localStorage to check if user already submitted the profile information.
+  const { currUser, setIsProfileSubmitted, isProfileSubmitted } = useContext(GlobalContext);
 
+  useEffect(()=>{
+    const checkProfileSubmission = async () => {
+      if (currUser?.phoneNumber) {
+        const localStorageKey = `${currUser.phoneNumber}-profileSubmitted`;
+        try {
+          const isProfileSubmittedInLocalStorage = await AsyncStorage.getItem(localStorageKey);
+          console.log('READING THE STORED VALUE',isProfileSubmittedInLocalStorage)
+          if (isProfileSubmittedInLocalStorage === "true") {
+            console.log('SETTING TRUE')
+            setIsProfileSubmitted(true);
+          } else {
+            console.log('SETTING FALSE')
+            setIsProfileSubmitted(false);
+          }
+        } catch (error) {
+          console.error('Error reading profile submission status from AsyncStorage:', error);
+          // Handle error accordingly
+        }
+      }
+    };
+  
+    checkProfileSubmission();
+  },[currUser])
+useEffect(()=>{
+  console.log('is Profile submitted ',isProfileSubmitted, typeof isProfileSubmitted)
+},[isProfileSubmitted])
   return (
-    <UserDataListener>
-      <Stack.Navigator>
-        {ready === false && (
-          <Stack.Screen
-            name="profile"
-            component={Profile}
-            options={{ headerShown: false }}
-          />
-        )}
-        {ready === true && (
-          <>
+    //I want to pass a prop to the screen profile
+    <Stack.Navigator>
+       {!isProfileSubmitted  && (
+        <Stack.Screen
+          name="profile_onboarding"
+          component={Profile}
+          options={{ headerShown: false }}
+        />
+      )} 
+      {isProfileSubmitted && (
+        <>
           <Stack.Screen
             name="home"
             component={TempHome}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-          name="profile"
-          component={Profile}
-          options={{ headerShown: false }}
-        />
-          </>
-          
-        )}
-         {ready === null && (
-          <Stack.Screen
-            name="duediligence"
-            component={DueDiligenceScreen}
+            name="profile"
+            component={Profile}
             options={{ headerShown: false }}
           />
-        )}
-      </Stack.Navigator>
-    </UserDataListener>
+        </>
+      )}
+    </Stack.Navigator>
   );
 };
 

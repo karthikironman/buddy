@@ -8,15 +8,11 @@ import { Alert } from "react-native";
 
 const ContextWrapper = (props) => {
   const [currUser, setCurrUser] = useState(null);
-  const [currUserData, setCurrUserData] = useState(null);
+  const [isProfileSubmitted, setIsProfileSubmitted] = useState(false)
 
   useEffect(() => {
     let authUnsubscribe = auth().onAuthStateChanged(async (user) => {
       setCurrUser(user);
-      if (!user) {
-        //logout action, restore all the states
-        setCurrUserData(null);
-      }
     });
     return () => {
       authUnsubscribe();
@@ -24,9 +20,7 @@ const ContextWrapper = (props) => {
   }, []);
 
   return (
-    <GlobalContext.Provider
-      value={{ theme, currUser, currUserData, setCurrUserData }}
-    >
+    <GlobalContext.Provider value={{ theme, currUser, isProfileSubmitted, setIsProfileSubmitted }}>
       {props.children}
     </GlobalContext.Provider>
   );

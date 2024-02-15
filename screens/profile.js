@@ -15,48 +15,23 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { askForPermission, pickImage, uploadImage } from "../utils/cameraImage";
-import GlobalContext from "../context/GlobalContext";
-// import { updateUserDocument } from "../services/onBoardingService";
 import LoaderModal from "../components/loaderModal";
-import { useNavigation } from "@react-navigation/native";
 import NotificationComponent from "../components/Notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import GlobalContext from "../context/GlobalContext";
 
-export default function Profile() {
-  const navigation = useNavigation();
+export default function Profile({}) {
+  const { setIsProfileSubmitted } = useContext(GlobalContext);
+
   const [displayName, setDisplayName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [permissionStatus, setPermissionStatus] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isSaveButtonEnabled, setIsSaveButtonEnabled] = useState(false);
-  const { currUserData, currUser } = useContext(GlobalContext);
-
-  useEffect(() => {
-    setDisplayName(currUserData?.displayName ?? "");
-    setSelectedImage(currUserData?.photoURL ?? "");
-  }, []);
 
   const isDisplayNameValid = async () => {
-    const regex = /^[a-z0-9_-]{3,}$/; // Regex for lowercase alphanumeric, hyphen, and underscore, minimum 3 characters
-
+    const regex = /^[a-zA-Z\s'-]{4,}$/; // Regex for at least 4 characters matching the pattern inside the character set [a-zA-Z\s'-].
     setIsSaveButtonEnabled(regex.test(displayName));
-  };
-  const isUnique = async () => {
-    try {
-      // Query Firestore to check if the displayName is unique (excluding the current user)
-      const querySnapshot = await firestore()
-        .collection("users")
-        .where("displayName", "==", displayName.toLowerCase())
-        .where(firestore.FieldPath.documentId(), "!=", currUser.uid)
-        .get();
-      if (!querySnapshot.empty) {
-        return false;
-      } else {
-        return true;
-      }
-    } catch (error) {
-      console.error("Error checking displayName uniqueness:", error);
-      throw error; // Handle the error according to your application's needs
-    }
   };
 
   useEffect(() => {
@@ -77,48 +52,51 @@ export default function Profile() {
     return firebaseStorageUrlRegex.test(url);
   };
 
-  async function handlePress(navigate = null) {
-    let unique = await isUnique();
-
-    if (unique) {
-      setLoading(true);
-      const user = auth().currentUser; //I cant make use of currUser from context, check documentation
-      let photoURL;
-      if (selectedImage) {
-        if (isFirebaseStorageUrl(selectedImage) == false) {
-          const { url } = await uploadImage(
-            selectedImage,
-            `images/${user.uid}`,
-            "profilePicture"
-          );
-          photoURL = url;
-        } else {
-          //user did not make any change
-          photoURL = selectedImage;
-        }
+  async function handlePress() {
+    setLoading(true);
+    const user = auth().currentUser; //I cant make use of currUser from context, check documentation
+    let photoURL;
+    if (selectedImage) {
+      if (isFirebaseStorageUrl(selectedImage) == false) {
+        //some image in the phone storage
+        const { url } = await uploadImage(
+          selectedImage,
+          `images/${user.uid}`,
+          "profilePicture"
+        );
+        photoURL = url;
+      } else {
+        //user did not make any change
+        photoURL = selectedImage;
       }
-      const userData = {
-        displayName,
-      };
-      if (photoURL) {
-        userData.photoURL = photoURL;
-      }
-      await updateUserDocument(user.uid, userData);
-      setLoading(false);
-      if (navigate) {
-        navigation.navigate(navigate);
-      }
-    } else {
-      Alert.alert("user name is not available, please choose some other name");
     }
+    const userData = {
+      displayName,
+    };
+    if (photoURL) {
+      userData.photoURL = photoURL;
+    }
+    await updateUserDocument(user.uid, userData);
+    
+     // Set AsyncStorage field to true
+  try {
+    await AsyncStorage.setItem(`${user.phoneNumber}-profileSubmitted`, "true");
+    setIsProfileSubmitted(true);
+    console.log('Profile submitted flag set successfully.');
+  } catch (error) {
+    console.error('Error setting profile submitted flag in AsyncStorage:', error);
+    // Handle error accordingly
   }
 
+    setLoading(false);
+
+  }
 
   const updateUserDocument = async (uid, userData) => {
     try {
-      const userRef = firestore().collection('users').doc(uid);
+      const userRef = firestore().collection("users").doc(uid);
       const userDoc = await userRef.get();
-  
+
       if (userDoc?.exists) {
         // If the user document already exists, update it with the new data
         await userRef.update(userData);
@@ -126,7 +104,7 @@ export default function Profile() {
         // If the user document does not exist, create a new one
         await userRef.set(userData);
       }
-  
+
       return userRef;
     } catch (error) {
       console.error("Error creating or updating user document:", error);
@@ -141,13 +119,6 @@ export default function Profile() {
     }
   }
 
-  // if (!permissionStatus) {
-  //   return <Text>Loading</Text>;
-  // }
-  // if (permissionStatus !== "granted") {
-  //   return <Text>You need to allow this permission</Text>;
-  // }
-
   const handleDisplayNameChange = (name) => {
     const lowerCaseName = name.toLowerCase();
     setDisplayName(lowerCaseName);
@@ -155,7 +126,7 @@ export default function Profile() {
 
   return (
     <React.Fragment>
-      <NotificationComponent/>
+      <NotificationComponent />
       <LoaderModal showModal={loading} />
       <View
         style={{
@@ -180,8 +151,8 @@ export default function Profile() {
             backgroundColor: "orange",
             alignItems: "center",
             justifyContent: "center",
-            borderColor:'grey',
-            borderWidth:5
+            borderColor: "grey",
+            borderWidth: 5,
           }}
         >
           {!selectedImage ? (
@@ -211,27 +182,15 @@ export default function Profile() {
           }}
         />
         <Text style={styles.ruleMessage}>
-          Username must be:
-          {"\n"}- Unique
-          {"\n"}- Minimum 3 characters
-          {"\n"}- No spaces, special characters except '-' and '_'
+          Your name must be:
+          {"\n"}- Minimum 4 characters 
         </Text>
         <View style={{ marginTop: "auto", width: 80 }}>
-        {currUserData ? (
-            //THIS IS USED WHEN THE PAGE IS DISPLAYED FROM THE THREE DOTS
-            <Button
-              title="SAVE"
-              onPress={() =>handlePress('home')}
-              disabled={!isSaveButtonEnabled}
-            />
-          ) : (
-            //THIS IS USED WHEN THE USER IS ONBOARDING
-            <Button
-              title="SAVE"
-              onPress={() =>handlePress(null)}
-              disabled={!isSaveButtonEnabled}
-            />
-          )}
+          <Button
+            title="SAVE"
+            onPress={() => handlePress(null)}
+            disabled={!isSaveButtonEnabled}
+          />
         </View>
       </View>
     </React.Fragment>
