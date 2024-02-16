@@ -6,7 +6,7 @@ import ContextWrapper from "./context/ContextWrapper.js";
 import NoInternetConnection from "./screens/noInternet.js";
 import { createStackNavigator } from "@react-navigation/stack";
 import SignIn from "./screens/signIn.js";
-import TempHome from "./screens/tempHome.js";
+import TempHome from "./screens/homeDrawerContainer.js";
 import { useContext, useEffect, useState } from "react";
 import GlobalContext from "./context/GlobalContext.js";
 import DueDiligenceScreen from "./screens/dueDiligence.js";
@@ -75,11 +75,7 @@ useEffect(()=>{
             component={TempHome}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="profile"
-            component={Profile}
-            options={{ headerShown: false }}
-          />
+       
         </>
       )}
     </Stack.Navigator>

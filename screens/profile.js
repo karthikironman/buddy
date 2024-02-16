@@ -22,7 +22,6 @@ import GlobalContext from "../context/GlobalContext";
 
 export default function Profile({}) {
   const { setIsProfileSubmitted } = useContext(GlobalContext);
-
   const [displayName, setDisplayName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [permissionStatus, setPermissionStatus] = useState(null);
