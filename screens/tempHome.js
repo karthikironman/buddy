@@ -1,12 +1,16 @@
 import React from "react";
-import { View, Button, StatusBar, Image } from "react-native";
+import { View, Button, StatusBar, Image, TouchableOpacity, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from "@react-native-firebase/auth";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import Profile from "../screens/profile.js"
+import { useEffect } from "react";
 
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
-const TempHome = ({ navigation }) => {
+const TempHome = () => {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar barStyle="default" />
@@ -15,30 +19,25 @@ const TempHome = ({ navigation }) => {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
-            if (route.name === "ITEMS") {
-              // Use the appropriate image source for the ITEMS tab
+            if (route.name === "Items") {
               iconName = focused
                 ? require("../assets/items.png")
-                : require("../assets/items.png");
-            } else if (route.name === "ORDERS") {
-              // Use the appropriate image source for the ORDERS tab
+                : require("../assets/items_inactive.png");
+            } else if (route.name === "Orders") {
               iconName = focused
                 ? require("../assets/heart.png")
-                : require("../assets/heart.png");
+                : require("../assets/heart_inactive.png");
             }
 
-            // You can also return a custom component instead of an image
             return (
-              <Image source={iconName} style={{ width: 24, height: 24 }} />
+              <Image source={iconName} style={{ width: 50, height: 50 }} />
             );
           },
-          tabBarShowLabel:false
-        })
-      }
-        
+          tabBarShowLabel: false,
+        })}
       >
-        <Tab.Screen name="ITEMS" component={LogoutScreen} />
-        <Tab.Screen name="ORDERS" component={ClearStorageScreen} />
+        <Tab.Screen name="Items" component={LogoutScreen} />
+        <Tab.Screen name="Orders" component={ClearStorageScreen} />
       </Tab.Navigator>
     </View>
   );
@@ -79,4 +78,30 @@ const ClearStorageScreen = () => {
   );
 };
 
-export default TempHome;
+const HomeScreen = () => {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen
+        name="Home"
+        component={TempHome}
+      />
+       <Drawer.Screen
+        name="Profile"
+        component={Profile}
+      />
+       <Drawer.Screen
+        name="Wallet"
+        component={Wallet}
+      />
+    </Drawer.Navigator>
+  );
+};
+
+const Wallet = () => {
+  useEffect(()=>{
+    console.log('WALLET USE EFFECT===>')
+  },[])
+  return <View><Text>WALLET</Text></View>
+}
+
+export default HomeScreen;

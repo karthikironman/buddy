@@ -35,6 +35,25 @@ export default function Profile({}) {
   };
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth().currentUser;
+        const userDoc = await firestore().collection("users").doc(user.uid).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          setDisplayName(userData.displayName || ''); // Set display name from the document or empty string if not available
+          setSelectedImage(userData.photoURL || null); // Set selectedImage to photoURL from the document or null if not available
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    console.log('PROFILE USE EFFECT===>')
     //validate the displayName and enable/disable the save button
     isDisplayNameValid();
   }, [displayName]);
