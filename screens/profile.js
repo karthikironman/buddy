@@ -158,7 +158,7 @@ export default function Profile({}) {
       >
         <Text style={{ fontSize: 22, color: "black" }}>Profile Info</Text>
         <Text style={{ fontSize: 14, color: "black", marginTop: 20 }}>
-          Please provide your user name and an optional profile photo
+          Please provide your Name and an optional Profile Photo
         </Text>
         <TouchableOpacity
           onPress={handleProfilePicture}
