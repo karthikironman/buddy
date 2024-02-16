@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Profile from "./profile.js";
 import ItemNOrderList from "./itemNOrderList.js";
+import Wallet from "./wallet.js";
 
 const Drawer = createDrawerNavigator();
 
@@ -17,12 +17,6 @@ const HomeDrawerContainer = () => {
   );
 };
 
-const Wallet = () => {
-  return (
-    <View>
-      <Text>WALLET</Text>
-    </View>
-  );
-};
+
 
 export default HomeDrawerContainer;

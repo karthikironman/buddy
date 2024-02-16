@@ -3,8 +3,6 @@ import { theme } from "../utils";
 import { useEffect, useState } from "react";
 
 import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore"; // Import firestore if you are using Firebase Firestore
-import { Alert } from "react-native";
 
 const ContextWrapper = (props) => {
   const [currUser, setCurrUser] = useState(null);
