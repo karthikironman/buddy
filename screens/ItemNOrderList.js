@@ -5,8 +5,8 @@ import {
   Image
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ItemList from "./ItemList";
-import OrderList from "./OrderList";
+import ItemList from "./itemList";
+import OrderList from "./orderList";
 
 const Tab = createBottomTabNavigator();
 const ItemNOrderList = () => {

@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Profile from "./profile.js";
-import ItemNOrderList from "./ItemNOrderList.js";
+import ItemNOrderList from "./itemNOrderList.js";
 
 const Drawer = createDrawerNavigator();
 
