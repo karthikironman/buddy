@@ -1,21 +1,27 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, Button } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, Button } from "react-native";
 
-const OrderList = () => {
-    const handleClearAsyncStorage = async () => {
-      try {
-        await AsyncStorage.clear();
-        console.log("AsyncStorage cleared successfully.");
-      } catch (error) {
-        console.error("Error clearing AsyncStorage:", error);
-        // Handle error accordingly
-      }
-    };
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Button title="Clear AsyncStorage" onPress={handleClearAsyncStorage} />
-      </View>
-    );
-  };
+const OrderList = ({ navigation }) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Logic to update badge count
+      // For example, you can fetch the number of new orders from your backend
+      const newOrderCount = 7; // Example value, replace it with your logic
+      navigation.setParams({ newOrderCount });
+    });
 
-  export default OrderList;
+    return unsubscribe;
+  }, [navigation]);
+
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Order List Screen</Text>
+      <Button
+        title="Go to Item List"
+        onPress={() => navigation.navigate('Items')}
+      />
+    </View>
+  );
+};
+
+export default OrderList;

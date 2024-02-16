@@ -2,7 +2,8 @@ import React from "react";
 import {
   View,
   StatusBar,
-  Image
+  Image,
+  Text
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ItemList from "./itemList";
@@ -29,7 +30,11 @@ const ItemNOrderList = () => {
             }
 
             return (
+              <View style={{ position: 'relative' }}>
               <Image source={iconName} style={{ width: 45, height: 45 }} />
+              {/* Badge notification */}
+              {route.name === "Orders" && <Text style={{ position: 'absolute', top: -5, right: -10, backgroundColor: 'red', borderRadius: 10, paddingHorizontal: 5, paddingVertical: 2, color: 'white' }}>2</Text>}
+            </View>
             );
           },
           tabBarShowLabel: false,
