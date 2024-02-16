@@ -1,11 +1,8 @@
 import React from "react";
 import {
   View,
-  Button,
   StatusBar,
-  Image,
-  TouchableOpacity,
-  Text,
+  Image
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ItemList from "./ItemList";

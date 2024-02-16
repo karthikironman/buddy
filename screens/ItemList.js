@@ -1,11 +1,7 @@
 import auth from "@react-native-firebase/auth";
 import {
   View,
-  Button,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-  Text,
+  Button
 } from "react-native";
 const Items = () => {
   const handleLogout = async () => {

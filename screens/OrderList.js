@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, Button, StatusBar, Image, TouchableOpacity, Text } from "react-native";
+import { View, Button } from "react-native";
 
 const OrderList = () => {
     const handleClearAsyncStorage = async () => {
