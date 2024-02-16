@@ -16,10 +16,7 @@ const OrderList = ({ navigation }) => {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Order List Screen</Text>
-      <Button
-        title="Go to Item List"
-        onPress={() => navigation.navigate('Items')}
-      />
+   
     </View>
   );
 };

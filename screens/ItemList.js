@@ -14,11 +14,13 @@ import {
 
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
+import { useNavigation } from "@react-navigation/native";
 
 const HomeScreen = () => {
   const [items, setItems] = useState([]);
   const [bannerAd, setBannerAd] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation()
 
   useEffect(() => {
     fetchItems();
@@ -83,7 +85,9 @@ const HomeScreen = () => {
           <TouchableOpacity
             key={item.id}
             style={styles.itemContainer}
-            onPress={() => {}}
+            onPress={() => {
+              navigation.navigate("orderTheItemsPage",{itemId:item.id})
+            }}
           >
             <Image source={{ uri: item.image }} style={styles.itemImage} />
             <View style={styles.itemDetails}>

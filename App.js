@@ -12,6 +12,7 @@ import GlobalContext from "./context/GlobalContext.js";
 import DueDiligenceScreen from "./screens/dueDiligence.js";
 import Profile from "./screens/profile.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import OrderTheItemPage from "./screens/orderTheItemPage.js";
 
 const Stack = createStackNavigator();
 
@@ -75,7 +76,11 @@ useEffect(()=>{
             component={TempHome}
             options={{ headerShown: false }}
           />
-       
+       <Stack.Screen
+            name="orderTheItemsPage"
+            component={OrderTheItemPage}
+            options={{ headerShown: false }}
+          />
         </>
       )}
     </Stack.Navigator>
