@@ -65,7 +65,31 @@ const OrderTheItemPage = ({ route }) => {
     fetchWalletBalance();
   }, [route.params.itemId]);
 
-  const handleOrder = () => {
+  // const handleOrder = () => {
+  //   if (address) {
+  //     if (item.price * quantity > walletBalance) {
+  //       Alert.alert(
+  //         'Insufficient Balance',
+  //         'Not enough balance in wallet. Please recharge in wallet page.',
+  //         [{ text: 'OK' }],
+  //         { cancelable: false }
+  //       );
+  //     } else {
+  //       console.log('HANDLE ORDER', {itemId, quantity, address });
+  //       // Proceed with order
+  //       //create an entry in the orders document of the firstore
+  //       item_id:
+  //       quantity:
+  //       address:
+  //       ordered_by:
+  //       delivered_by:
+  //       status: open / progress /closed / cancelled
+  //     }
+  //   } else {
+  //     alert('Please enter your address to proceed with the order.');
+  //   }
+  // }
+  const handleOrder = async () => {
     if (address) {
       if (item.price * quantity > walletBalance) {
         Alert.alert(
@@ -75,14 +99,49 @@ const OrderTheItemPage = ({ route }) => {
           { cancelable: false }
         );
       } else {
-        console.log('HANDLE ORDER', {itemId, quantity, address });
-        // Proceed with order
+        try {
+          // Get current user
+          const user = auth().currentUser;
+          
+          // Create the order object
+          const order = {
+            item_id: itemId,
+            quantity: quantity,
+            address: address,
+            ordered_by: user.uid, // Assuming user ID is used for identification
+            delivered_by: '', // You can update this when assigning a delivery person
+            status: 'open', // Initial status of the order
+            created_at: firestore.FieldValue.serverTimestamp()
+          };
+  
+          // Add the order to Firestore
+          await firestore().collection('orders').add(order);
+  
+          // Alert user that order has been placed
+          Alert.alert(
+            'Order Placed Successfully',
+            'Your order has been placed successfully.',
+            [{ text: 'OK' }],
+            { cancelable: false }
+          );
+  
+          // Navigate to some page, maybe order summary
+         // navigation.navigate('OrderSummary');
+        } catch (error) {
+          console.error('Error placing order:', error);
+          Alert.alert(
+            'Error',
+            'An error occurred while placing your order. Please try again later.',
+            [{ text: 'OK' }],
+            { cancelable: false }
+          );
+        }
       }
     } else {
       alert('Please enter your address to proceed with the order.');
     }
   }
-
+  
   const handleAddressChange = (text) => {
     setAddress(text);
     setIsAddressEntered(!!text);

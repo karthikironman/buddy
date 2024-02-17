@@ -9,7 +9,7 @@ const phoneNumberLists = {
 };
 const ContextWrapper = (props) => {
   const [currUser, setCurrUser] = useState(null);
-  const [isProfileSubmitted, setIsProfileSubmitted] = useState(false);
+  const [isProfileSubmitted, setIsProfileSubmitted] = useState(null);
 
   useEffect(() => {
     let authUnsubscribe = auth().onAuthStateChanged(async (user) => {
