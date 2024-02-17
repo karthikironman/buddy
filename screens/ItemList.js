@@ -7,13 +7,11 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  Modal,
   Linking,
   RefreshControl,
 } from "react-native";
 
 import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
 const HomeScreen = () => {
@@ -46,13 +44,6 @@ const HomeScreen = () => {
     setBannerAd(adSnapshot.data());
   };
 
-  const handleLogout = async () => {
-    try {
-      await auth().signOut();
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -100,12 +91,17 @@ const HomeScreen = () => {
                 Delivery Speed:{" "}
                 <Text style={styles.itemValue}>{item.deliverySpeed}</Text>
               </Text>
+              <TouchableOpacity
+                style={styles.orderButton}
+                onPress={() => {
+                  navigation.navigate("orderTheItemsPage",{itemId:item.id})
+                }}
+              >
+                <Text style={styles.orderButtonText}>Order Now</Text>
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -119,6 +115,7 @@ const styles = StyleSheet.create({
   bannerImage: {
     width: "100%",
     height: 150,
+    borderRadius: 10,
     resizeMode: "cover",
   },
   itemContainer: {
@@ -132,6 +129,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginRight: 10,
+    borderRadius: 10,
     resizeMode: "cover",
   },
   itemDetails: {
@@ -140,10 +138,12 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 5,
   },
   shopName: {
     fontSize: 16,
     color: "#555",
+    marginBottom: 5,
   },
   itemLabel: {
     fontSize: 16,
@@ -155,73 +155,6 @@ const styles = StyleSheet.create({
     marginTop: 3,
     color: "blue",
   },
-  logoutButton: {
-    backgroundColor: "red",
-    padding: 10,
-    borderRadius: 5,
-    margin: 10,
-  },
-  logoutButtonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  profilePage: {
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-    margin: 10,
-  },
-  profilePageText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    width: "89%",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalImage: {
-    width: "100%",
-    height: 200,
-    marginTop: 20,
-    marginBottom: 10,
-    resizeMode: "cover",
-  },
-  modalContent: {
-    flexGrow: 1,
-  },
-  closeButton: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    zIndex: 9,
-  },
-  closeButtonBackground: {
-    backgroundColor: "#ffffff",
-    borderRadius: 50,
-    padding: 8,
-  },
-  closeButtonText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black",
-  },
   orderButton: {
     backgroundColor: "blue",
     paddingHorizontal: 20,
@@ -232,8 +165,8 @@ const styles = StyleSheet.create({
   orderButtonText: {
     color: "white",
     fontWeight: "bold",
-    padding: 5,
-    fontSize: 20,
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 

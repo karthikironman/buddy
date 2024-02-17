@@ -2,7 +2,7 @@ import React from "react";
 import { theme } from "../utils";
 
 const GlobalContext = React.createContext({
-  theme,
+  theme
 });
 
 export default GlobalContext;

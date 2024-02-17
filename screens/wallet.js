@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, Button, Linking, StyleSheet } from "react-native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import GlobalContext from "../context/GlobalContext";
 
 const Wallet = () => {
   const [walletBalance, setWalletBalance] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const {watsappContact} = useContext(GlobalContext)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -39,14 +41,14 @@ const Wallet = () => {
   const openWhatsAppRecharge = () => {
     const message = `Hi, I would like to recharge my wallet. My phone number is ${phoneNumber}`;
     Linking.openURL(
-      `whatsapp://send?text=${message}&phone=YOUR_PHONE_NUMBER_HERE`
+      `whatsapp://send?text=${message}&phone=${watsappContact}`
     );
   };
 
   const openWhatsAppTransfer = () => {
     const message = `Hi, I would like to transfer the money to my bank account. My account is ${phoneNumber}`;
     Linking.openURL(
-      `whatsapp://send?text=${message}&phone=YOUR_PHONE_NUMBER_HERE`
+      `whatsapp://send?text=${message}&phone=${watsappContact}`
     );
   };
 
