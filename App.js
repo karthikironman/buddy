@@ -16,6 +16,7 @@ import OrderTheItemPage from "./screens/orderTheItemPage.js";
 
 import firestore from "@react-native-firebase/firestore";
 import CustomerTracking from "./screens/customerTracking.js";
+import AcceptTheOrderPage from "./screens/acceptTheOrderPage.js";
 
 const Stack = createStackNavigator();
 
@@ -76,19 +77,17 @@ const Loop = () => {
 
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection("orders")
-      .where("ordered_by", "==", currUser.uid) // Filter orders by user's UID
-      .where("status", "in", ["open", "progress"]) // Filter orders by status
-      //  .orderBy("created_at", "desc") // Order documents by created_at in descending order
-      //  .limit(1)
+    .collection("orders")
+    .where("status", "in", ["open", "progress"]) // Filter orders by status
+    .where("participants", "array-contains", currUser.uid) // Check if the current user's UID is in the participants array
       .onSnapshot((querySnapshot) => {
         console.log("CHANGE DETECTED");
-        if (querySnapshot && !querySnapshot.empty) {
+        if (!querySnapshot.empty) {
           console.log("not an empty change");
           // If any open or progress order found, set hasOpenOrder to true
           const latestOrder = querySnapshot.docs[0].data();
           console.log(querySnapshot.docs[0].id);
-          if (["open", "progress"].includes(latestOrder.status) === true) {
+          if (["open", "progress"].includes(latestOrder.status)) {
             setCustomerTrackingId(querySnapshot.docs[0].id);
           } else {
             setCustomerTrackingId("");
@@ -100,6 +99,7 @@ const Loop = () => {
     // Clean up function to unsubscribe from orders collection when unmounted
     return () => unsubscribe();
   }, []);
+  
 
   useEffect(() => {
     console.log({ CustomerTracking, isProfileSubmitted });
@@ -125,6 +125,11 @@ const Loop = () => {
           <Stack.Screen
             name="orderTheItemsPage"
             component={OrderTheItemPage} // You can create a new component to inform the user that orders are blocked
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="acceptTheOrdersPage"
+            component={AcceptTheOrderPage} // You can create a new component to inform the user that orders are blocked
             options={{ headerShown: false }}
           />
         </>

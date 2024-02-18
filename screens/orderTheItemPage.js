@@ -51,7 +51,7 @@ const OrderTheItemPage = ({ route }) => {
 
           if (userDoc.exists) {
             const userData = userDoc.data();
-            setWalletBalance(userData.wallet);
+            setWalletBalance(userData.wallet ?? 0);
           } else {
             console.log('User data not found');
           }
@@ -109,6 +109,7 @@ const OrderTheItemPage = ({ route }) => {
             quantity: quantity,
             address: address,
             ordered_by: user.uid, // Assuming user ID is used for identification
+            participants:[user.uid],
             delivered_by: '', // You can update this when assigning a delivery person
             status: 'open', // Initial status of the order
             created_at: firestore.FieldValue.serverTimestamp()
