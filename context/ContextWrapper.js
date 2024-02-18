@@ -10,6 +10,7 @@ const phoneNumberLists = {
 const ContextWrapper = (props) => {
   const [currUser, setCurrUser] = useState(null);
   const [isProfileSubmitted, setIsProfileSubmitted] = useState(null);
+  const [customerTrackingId, setCustomerTrackingId] = useState("")
 
   useEffect(() => {
     let authUnsubscribe = auth().onAuthStateChanged(async (user) => {
@@ -27,6 +28,8 @@ const ContextWrapper = (props) => {
         currUser,
         isProfileSubmitted,
         setIsProfileSubmitted,
+        customerTrackingId,
+        setCustomerTrackingId,
         watsappContact: phoneNumberLists.admin,
       }}
     >

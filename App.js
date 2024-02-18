@@ -34,9 +34,13 @@ const App = () => {
 
 const Loop = () => {
   //read the localStorage to check if user already submitted the profile information.
-  const { currUser, setIsProfileSubmitted, isProfileSubmitted } =
-    useContext(GlobalContext);
-  const [hasOpenOrder, setHasOpenOrder] = useState(false); // State to track if there is an open order
+  const {
+    currUser,
+    setIsProfileSubmitted,
+    isProfileSubmitted,
+    customerTrackingId,
+    setCustomerTrackingId,
+  } = useContext(GlobalContext);
 
   useEffect(() => {
     const checkProfileSubmission = async () => {
@@ -69,34 +73,37 @@ const Loop = () => {
 
     checkProfileSubmission();
   }, [currUser]);
-  useEffect(() => {
-    console.log({ isProfileSubmitted, hasOpenOrder });
-  });
+
   useEffect(() => {
     const unsubscribe = firestore()
       .collection("orders")
-       .where("ordered_by", "==", currUser.uid) // Filter orders by user's UID
-       .where("status", "in", ["open", "progress"]) // Filter orders by status
-    //  .orderBy("created_at", "desc") // Order documents by created_at in descending order
-    //  .limit(1)
+      .where("ordered_by", "==", currUser.uid) // Filter orders by user's UID
+      .where("status", "in", ["open", "progress"]) // Filter orders by status
+      //  .orderBy("created_at", "desc") // Order documents by created_at in descending order
+      //  .limit(1)
       .onSnapshot((querySnapshot) => {
         console.log("CHANGE DETECTED");
         if (querySnapshot && !querySnapshot.empty) {
+          console.log("not an empty change");
           // If any open or progress order found, set hasOpenOrder to true
           const latestOrder = querySnapshot.docs[0].data();
-          console.log(latestOrder);
+          console.log(querySnapshot.docs[0].id);
           if (["open", "progress"].includes(latestOrder.status) === true) {
-            setHasOpenOrder(true);
-          }else if(["closed", "cancelled"].includes(latestOrder.status) === true) {
-            setHasOpenOrder(false);
+            setCustomerTrackingId(querySnapshot.docs[0].id);
+          } else {
+            setCustomerTrackingId("");
           }
-        }else{
-          setHasOpenOrder(false)
+        } else {
+          setCustomerTrackingId("");
         }
       });
     // Clean up function to unsubscribe from orders collection when unmounted
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    console.log({ CustomerTracking, isProfileSubmitted });
+  });
 
   const getScreen = () => {
     if (isProfileSubmitted === false) {
@@ -107,7 +114,7 @@ const Loop = () => {
           options={{ headerShown: false }}
         />
       );
-    } else if (isProfileSubmitted && hasOpenOrder === false) {
+    } else if (isProfileSubmitted && customerTrackingId === "") {
       return (
         <>
           <Stack.Screen
@@ -122,7 +129,7 @@ const Loop = () => {
           />
         </>
       );
-    } else if (isProfileSubmitted && hasOpenOrder === true) {
+    } else if (isProfileSubmitted && customerTrackingId !== "") {
       return (
         <Stack.Screen
           name="orderTheItemsBlockedPage"
