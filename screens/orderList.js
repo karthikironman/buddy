@@ -41,6 +41,19 @@ const OrderList = () => {
     <View style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {orders.length === 0 && (
+          <Text
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: "30%",
+              width: "70%",
+              textAlign: "center",
+            }}
+          >
+            No orders available right now, please check after some time
+          </Text>
+        )}
         {orders.map((order, index) => (
           <TouchableOpacity
             key={order.id}

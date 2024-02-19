@@ -221,7 +221,7 @@ const OrderTheItemPage = ({ route }) => {
                   innerBackgroundColor="#3498db"
                   outerBackgroundColor="#2980b9"
                   onReachedToEnd={handleOrder}
-                  text="Slide to Order"
+                  title="Slide to Order"
                   autoReset = {true}
                 />
               </View>

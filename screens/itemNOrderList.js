@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  View,
-  StatusBar,
-  Image,
-  Text
-} from "react-native";
+import { View, StatusBar, Image, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ItemList from "./itemList";
 import OrderList from "./orderList";
@@ -15,7 +10,10 @@ const ItemNOrderList = () => {
     <View style={{ flex: 1 }}>
       <StatusBar barStyle="default" />
       <Tab.Navigator
+      
+      shifting={true}
         screenOptions={({ route }) => ({
+          shifting:true,
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
@@ -30,11 +28,26 @@ const ItemNOrderList = () => {
             }
 
             return (
-              <View style={{ position: 'relative' }}>
-              <Image source={iconName} style={{ width: 45, height: 45 }} />
-              {/* Badge notification */}
-              {/* {route.name === "Orders" && <Text style={{ position: 'absolute', top: -5, right: -10, backgroundColor: 'red', borderRadius: 10, paddingHorizontal: 5, paddingVertical: 2, color: 'white' }}>0</Text>} */}
-            </View>
+              <View style={{ position: "relative" }}>
+                <Image source={iconName} style={{ width: 45, height: 45 }} />
+                {/* Badge notification */}
+                {/* {route.name === "Orders" && (
+                  <Text
+                    style={{
+                      position: "absolute",
+                      top: -5,
+                      right: -10,
+                      backgroundColor: "red",
+                      borderRadius: 10,
+                      paddingHorizontal: 5,
+                      paddingVertical: 2,
+                      color: "white",
+                    }}
+                  >
+                    0
+                  </Text>
+                )} */}
+              </View>
             );
           },
           tabBarShowLabel: false,

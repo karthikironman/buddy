@@ -38,10 +38,20 @@ const CustomerTracking = () => {
   }, [currentUserUid,customerTrackingId ]);
 
   const handleCallCustomer = () => {
-    if (orderData && orderData.ordered_by_data && orderData.ordered_by_data.phone) {
-      Linking.openURL(`tel:${orderData.ordered_by_data.phone}`);
+    let phoneNumber = null;
+    
+    // Check the current user's type and set the phoneNumber accordingly
+    if (currentUserType === "customer" && orderData.delivered_by_data && orderData.delivered_by_data.phone) {
+      phoneNumber = orderData.delivered_by_data.phone; // Call the agent's phone
+    } else if (currentUserType === "agent" && orderData.ordered_by_data && orderData.ordered_by_data.phone) {
+      phoneNumber = orderData.ordered_by_data.phone; // Call the customer's phone
+    }
+    
+    // Make the call if phoneNumber is available
+    if (phoneNumber) {
+      Linking.openURL(`tel:${phoneNumber}`);
     } else {
-      console.log("No customer phone number available");
+      console.log("No phone number available to call");
     }
   };
 
@@ -65,7 +75,7 @@ const CustomerTracking = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>CUSTOMER TRACKING</Text>
+      <Text style={styles.header}>ORDER TRACKING</Text>
       {orderData ? (
         <>
           <Text style={styles.statusText}>Order Status: {orderData.status}</Text>
@@ -87,8 +97,8 @@ const CustomerTracking = () => {
               {orderData.delivered_by_data ? (
                 <View style={styles.userData}>
                   <Text style={styles.userName}>Delivered By: {orderData.delivered_by_data.displayName}</Text>
-                  <Text style={styles.userPhone}>Agent Phone: {orderData.delivered_by_data.phone}</Text>
-                  <Button title="Call Agent" onPress={handleCallCustomer} />
+                  <Text style={styles.userPhone}>Buddy Phone: {orderData.delivered_by_data.phone}</Text>
+                  <Button title="Call Buddy" onPress={handleCallCustomer} />
                 </View>
               ) : (
                 <Text>We are waiting for the agent to accept the order.</Text>
@@ -100,11 +110,11 @@ const CustomerTracking = () => {
               {orderData.ordered_by_data ? (
                 <View style={styles.userData}>
                   <Text style={styles.userName}>Ordered By: {orderData.ordered_by_data.displayName}</Text>
-                  <Text style={styles.userPhone}>Customer Phone: {orderData.ordered_by_data.phone}</Text>
-                  <Button title="Call Customer" onPress={handleCallCustomer} />
+                  <Text style={styles.userPhone}>Buddy Phone: {orderData.ordered_by_data.phone}</Text>
+                  <Button title="Call Buddy" onPress={handleCallCustomer} />
                 </View>
               ) : (
-                <Text>No customer information available.</Text>
+                <Text>Buddy information available.</Text>
               )}
               {orderData.status === "progress" && (
             
@@ -114,7 +124,7 @@ const CustomerTracking = () => {
                   innerBackgroundColor="#3498db"
                   outerBackgroundColor="#2980b9"
                   onReachedToEnd={handleStatusChange}
-                  text="Slide to Order"
+                  title="COMPLETE"
                   autoReset = {true}
                 />
               )}
