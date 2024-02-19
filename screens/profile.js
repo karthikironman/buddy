@@ -114,6 +114,7 @@ export default function Profile({}) {
     try {
       const userRef = firestore().collection("users").doc(uid);
       const userDoc = await userRef.get();
+      userData.phone = auth().currentUser.phoneNumber;
 
       if (userDoc?.exists) {
         // If the user document already exists, update it with the new data
@@ -138,8 +139,7 @@ export default function Profile({}) {
   }
 
   const handleDisplayNameChange = (name) => {
-    const lowerCaseName = name.toLowerCase();
-    setDisplayName(lowerCaseName);
+    setDisplayName(name);
   };
 
   return (
