@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext, memo } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -14,7 +14,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// Can use this function below or use Expo's Push Notification Tool from: https://expo.dev/notifications
 async function sendPushNotification(expoPushToken, title, body) {
   const message = {
     to: expoPushToken,
@@ -75,32 +74,10 @@ async function registerForPushNotificationsAsync() {
 
 function NotificationComponent() {
   const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  // const notificationListener = useRef();
-  // const responseListener = useRef();
-
   const { currUser } = useContext(GlobalContext);
 
   useEffect(() => {
-    const recordToken = async () => {
-      const userRef = firestore().collection("users").doc(currUser.uid);
-      try {
-        // Update the user document with the push notification token
-        console.log("[SAVING TOKEN IN DB]");
-        await userRef.update({
-          pushNotificationToken: expoPushToken,
-        });
-      } catch (error) {
-        console.error("Error updating push notification token:", error);
-      }
-    };
-    if (expoPushToken != "") {
-      recordToken();
-    }
-  }, [expoPushToken]);
-
-  useEffect(() => {
-    console.log("[USE EFFFECT] Notification.js");
+    console.log("[USE EFFECT] Notification.js");
     registerForPushNotificationsAsync().then(async (token) => {
       if(token){
         setExpoPushToken(token);
@@ -108,27 +85,32 @@ function NotificationComponent() {
         console.log('PROBABLY YOU ARE USING SIMULATOR, NOTIFICATIONS WONT WORK HERE')
       }
     });
+  }, []);
 
-    // notificationListener.current =
-    //   Notifications.addNotificationReceivedListener((notification) => {
-    //     setNotification(notification);
-    //   });
+  useEffect(() => {
+    const recordToken = async () => {
+      if (!currUser || !expoPushToken) return;
 
-    // responseListener.current =
-    //   Notifications.addNotificationResponseReceivedListener((response) => {
-    //     console.log(response);
-    //   });
+      const userRef = firestore().collection("users").doc(currUser.uid);
+      try {
+        // Set the user document with the push notification token
+        console.log("[SAVING TOKEN IN DB]");
+        await userRef.set(
+          {
+            pushNotificationToken: expoPushToken,
+          },
+          { merge: true } // Use merge: true to merge with existing data or create new if not exists
+        );
+      } catch (error) {
+        console.error("Error updating push notification token:", error);
+      }
+    };
 
-    // return () => {
-    //   Notifications.removeNotificationSubscription(
-    //     notificationListener.current
-    //   );
-    //   Notifications.removeNotificationSubscription(responseListener.current);
-    // };
-  }, [expoPushToken]);
+    recordToken();
+  }, [expoPushToken, currUser]);
 
-  return null
+  return null;
 }
-export default NotificationComponent;
 
-export {sendPushNotification}
+export default NotificationComponent;
+export { sendPushNotification };

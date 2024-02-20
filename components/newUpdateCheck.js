@@ -34,15 +34,19 @@ const UpdateCheckComponent = () => {
     const updateCurrentVersion = async () => {
       try {
         if (currUser) {
-          await firestore().collection("users").doc(currUser.uid).update({
-            currentVersion: currVersion,
-          });
+          const userRef = firestore().collection("users").doc(currUser.uid);
+          await userRef.set(
+            {
+              currentVersion: currVersion,
+            },
+            { merge: true } // Use merge: true to merge with existing data or create new if not exists
+          );
         }
       } catch (error) {
-        //note: the error appearing on profile screen can be ignored
-        //it only happens during testing and when I delete the user document, which in real world never
-        //gonna hapen
-        console.error("Error updating current version in user document", error);
+        console.error(
+          "Error updating current version in user document",
+          error
+        );
       }
     };
 

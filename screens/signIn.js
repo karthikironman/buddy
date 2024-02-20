@@ -13,6 +13,8 @@ import LoaderModal from "../components/loaderModal";
 import { validatePhone } from "../utils/phoneNumber";
 import appInfo from "../config/appInfo";
 import GlobalContext from "../context/GlobalContext";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const SignIn = () => {
   const {
@@ -24,6 +26,17 @@ const SignIn = () => {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Clear the item
+    AsyncStorage.clear()
+      .then(() => {
+        console.log("Items removed successfully");
+      })
+      .catch((error) => {
+        console.error("Error removing item:", error);
+      });
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -117,10 +130,7 @@ const SignIn = () => {
             }}
           />
         ) : (
-          <Button
-            title="Send OTP"
-            onPress={sendOTP}
-          />
+          <Button title="Send OTP" onPress={sendOTP} />
         )}
       </View>
 
