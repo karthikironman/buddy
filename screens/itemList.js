@@ -14,6 +14,8 @@ import {
 import firestore from "@react-native-firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
+import NewUpdateCheck from "../components/newUpdateCheck"
+
 const HomeScreen = () => {
   const [items, setItems] = useState([]);
   const [bannerAd, setBannerAd] = useState(null);
@@ -48,7 +50,7 @@ const HomeScreen = () => {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" />
-
+      <NewUpdateCheck/>
       <ScrollView
         style={{ flex: 1 }}
         refreshControl={
