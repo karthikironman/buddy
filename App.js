@@ -117,6 +117,7 @@ const Loop = () => {
     } else if (isProfileSubmitted && customerTrackingId === "") {
       return (
         <>
+       
           <Stack.Screen
             name="home"
             component={TempHome}

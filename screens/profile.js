@@ -16,7 +16,6 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { askForPermission, pickImage, uploadImage } from "../utils/cameraImage";
 import LoaderModal from "../components/loaderModal";
-import NotificationComponent from "../components/Notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GlobalContext from "../context/GlobalContext";
 
@@ -144,7 +143,6 @@ export default function Profile({}) {
 
   return (
     <React.Fragment>
-      <NotificationComponent />
       <LoaderModal showModal={loading} />
       <View
         style={{
